@@ -6,7 +6,7 @@ import { Cards } from "../ui/Cards";
 import { Accordian } from "../ui/Accordian";
 import { Testimonial } from "../ui/Testimonial";
 import { Getstarted } from "../ui/Getstarted";
-import pb from "../../libs/pocketbase";
+import pb from "../../lib/pocketbase";
 export const Home = () => {
   const [posts, setPosts] = useState([]);
   const [questions, setQuestions] = useState([]);

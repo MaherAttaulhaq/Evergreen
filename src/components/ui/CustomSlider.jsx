@@ -2,7 +2,7 @@
 
 import React, { useState, forwardRef } from "react";
 import * as SliderPrimitive from "@radix-ui/react-slider";
-import { cn } from "@/libs/utils";
+import { cn } from "@/lib/utils";
 import {
   Tooltip,
   TooltipContent,

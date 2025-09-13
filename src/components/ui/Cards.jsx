@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "./button";
 import { MdBedroomParent, MdOutlineBathroom } from "react-icons/md";
-import pb from "@/libs/pocketbase";
+import pb from "@/lib/pocketbase";
 
 export const Cards = ({ posts }) => {
   const [cardData, setCardData] = useState([]);

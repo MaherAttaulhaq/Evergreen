@@ -1,53 +1,145 @@
-import React from "react";
-import { NavLink } from "react-router";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom"; // Use useNavigate for navigation
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { FaGoogle, FaFacebookF } from "react-icons/fa"; // Install react-icons
 
-export const Signin = () => {
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardTitle,
+  CardDescription,
+  CardFooter,
+} from "@/components/ui/card";
+import { loginFormSchema } from "@/schemas";
+import  pb  from "@/lib/pocketbase";
+
+export function Signin() {
+  const navigate = useNavigate(); // Hook for navigation
+  const [error, setError] = useState(null);
+
+  const form = useForm({
+    resolver: zodResolver(loginFormSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  const onSubmit = async (data) => {
+    setError(null);
+    try {
+      await pb.collection("users").authWithPassword(data.email, data.password);
+      navigate("/");
+    } catch (e) {
+      setError("Invalid email or password.");
+    }
+  };
+
+  const handleOAuthSignIn = async (provider) => {
+    setError(null);
+    try {
+      const authData = await pb
+        .collection("users")
+        .authWithOAuth2({ provider });
+
+      if (authData.record) {
+        navigate("/dashboard");
+      }
+    } catch (e) {
+      setError(e.message || `An error occurred during ${provider} sign-in.`);
+    }
+  };
+
   return (
-    <section className="container mx-auto">
-      <div className="flex justify-center items-center my-6">
-        <div className="w-full max-w-md p-8 space-y-3 rounded-xl bg-white/20 backdrop-blur-md border border-white/30 shadow-lg">
-          <h1 className="text-2xl font-bold text-center">Sign In</h1>
-          <form
-            action=""
-            className="space-y-6 ng-untouched ng-pristine ng-valid"
-          >
-            <div className="space-y-1 text-sm">
-              <label htmlFor="email" className="block text-black">
-                Email
-              </label>
-              <input
-                type="email"
-                name="email"
-                id="email"
-                placeholder="Email"
-                className="w-full px-4 py-3 rounded-md border border-white/30 bg-white/20 focus:bg-white/30 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-black"
-              />
-            </div>
-            <div className="space-y-1 text-sm">
-              <label htmlFor="password" className="block text-black">
-                Password
-              </label>
-              <input
-                type="password"
-                name="password"
-                id="password"
-                placeholder="Password"
-                className="w-full px-4 py-3 rounded-md border border-white/30 bg-white/20 focus:bg-white/30 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-black"
-              />
-            </div>
-            <button className="block w-full p-3 text-center rounded-sm text-white bg-primary hover:bg-primary-800">
-              Sign In
-            </button>
+    <Card className="mx-auto max-w-sm">
+      <CardHeader>
+        <CardTitle className="text-xl">Sign In</CardTitle>
+        <CardDescription>
+          Enter your email and password below or use a social provider.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input placeholder="name@example.com" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input type="password" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            {error && <p className="text-red-500 text-sm">{error}</p>}
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={form.formState.isSubmitting}
+            >
+              {form.formState.isSubmitting
+                ? "Signing In..."
+                : "Sign In with Email"}
+            </Button>
           </form>
-          <p className="text-xs text-center sm:px-6 text-black">
-            Don't have an account?
-            <NavLink to="/signup" className="underline text-primary">
-              {" "}
-              Sign Up
-            </NavLink>
-          </p>
+        </Form>
+        <div className="relative mt-4">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t" />
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-background px-2 text-muted-foreground">
+              Or continue with
+            </span>
+          </div>
         </div>
-      </div>
-    </section>
+        <div className="mt-4 flex flex-col gap-2">
+          <Button
+            variant="outline"
+            className="w-full"
+            onClick={() => handleOAuthSignIn("google")}
+          >
+            <FaGoogle className="mr-2 h-4 w-4" />
+            Google
+          </Button>
+          <Button
+            variant="outline"
+            className="w-full"
+            onClick={() => handleOAuthSignIn("facebook")}
+          >
+            <FaFacebookF className="mr-2 h-4 w-4" />
+            Facebook
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
   );
-};
+}
