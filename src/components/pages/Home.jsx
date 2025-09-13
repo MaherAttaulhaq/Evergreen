@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Herosection } from "../ui/Herosection";
 import { Feature } from "../ui/Feature";
-import { Location } from "../ui/location";
+import { Location } from "../ui/Location";
 import { Cards } from "../ui/Cards";
 import { Accordian } from "../ui/Accordian";
 import { Testimonial } from "../ui/Testimonial";
