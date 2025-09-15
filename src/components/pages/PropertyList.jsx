@@ -1,15 +1,36 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { CiLocationOn, CiSaveDown1 } from "react-icons/ci";
 import { RxCross2 } from "react-icons/rx";
 import { RiPriceTag3Line } from "react-icons/ri";
 import { CustomSlider } from "../ui/CustomSlider";
 import { LucideGitCompareArrows, LucideHotel } from "lucide-react";
 import { Input } from "../ui/input";
-import { MdBedroomParent, MdOutlineBathroom, MdOutlinePlace } from "react-icons/md";
+import {
+  MdBedroomParent,
+  MdOutlineBathroom,
+  MdOutlinePlace,
+} from "react-icons/md";
 import { Button } from "../ui/button";
 import { FaStar } from "react-icons/fa6";
 import { Cards } from "../ui/Cards";
+import products from "../../api/products.json";
+import { useSearchParams } from "react-router";
 export const PropertyList = () => {
+  const [searchParams] = useSearchParams();
+
+  // Read the parameters from the URL
+  const locationId = searchParams.get("location_id");
+  const locationName = searchParams.get("location_name");
+  const type = searchParams.get("type");
+  const price = searchParams.get("price");
+  const rooms = searchParams.get("rooms");
+
+  useEffect(() => {
+    if (location) {
+      // Fetch product details using productId
+      console.log("Fetching location with ID:", location);
+    }
+  }, [location]); // Re-run effect when searchParams change
   return (
     <div className="flex gap-6 mt-16">
       {/* sidebar */}
@@ -29,8 +50,10 @@ export const PropertyList = () => {
             </div>
           </div>
           <div className="flex gap-2 mx-4 my-2 items-center">
-            <input type="checkbox" checked></input>
-            <p className="font-semibold tracking-tighter">Lahore ,Pakistan</p>
+            <input type="checkbox"></input>
+            <button>
+              <p className="font-semibold tracking-tighter">{locationName}</p>
+            </button>
           </div>
           <div className="flex gap-2 mx-4 my-2 items-center">
             <input type="checkbox"></input>
@@ -49,7 +72,7 @@ export const PropertyList = () => {
           </div>
           <div className="flex gap-2 mx-4 my-2 items-center">
             <input type="radio"></input>
-            <p className="font-semibold tracking-tighter">under $1000</p>
+            <p className="font-semibold tracking-tighter">{price}</p>
           </div>
           <div className="flex gap-2 mx-4 my-2 items-center">
             <input type="radio"></input>
@@ -60,7 +83,7 @@ export const PropertyList = () => {
             <p className="font-semibold tracking-tighter">more than $15000</p>
           </div>
           <div className="flex gap-2 mx-4 my-2 items-center">
-            <input type="radio" checked></input>
+            <input type="radio"></input>
             <p className="font-semibold tracking-tighter">Custom</p>
           </div>
           <div className="mx-2 my-4 flex justify-center items-center">
@@ -95,22 +118,22 @@ export const PropertyList = () => {
           <div className="flex justify-between items-center border-b border-gray-200 rounded-full bg-gray-200 mx-2 p-2">
             <div className="flex gap-2 items-center">
               <MdOutlinePlace />
-              <h1 className="text-lg">Type of Place</h1>
+              <h1 className="text-lg">Type of </h1>
             </div>
             <div className="bg-white text-black rounded-full p-1">
               <RxCross2 />
             </div>
           </div>
           <div className="flex gap-2 mx-4 my-2 items-center">
-            <input type="checkbox" checked></input>
-            <p className="font-semibold tracking-tighter">Single family home</p>
+            <input type="checkbox"></input>
+            <p className="font-semibold tracking-tighter">{type}</p>
           </div>
           <div className="flex gap-2 mx-4 my-2 items-center">
             <input type="checkbox"></input>
             <p className="font-semibold tracking-tighter">Townhouse</p>
           </div>
           <div className="flex gap-2 mx-4 my-2 items-center">
-            <input type="checkbox" checked></input>
+            <input type="checkbox"></input>
             <p className="font-semibold tracking-tighter">Apartment</p>
           </div>
           <div className="flex gap-2 mx-4 my-2 items-center">
@@ -130,195 +153,44 @@ export const PropertyList = () => {
           </div>
           <div className="flex gap-6 mx-4 my-6 items-center">
             <Button variant="secondary" className={"bg-blue-500 text-white"}>
-              Garden
+              {rooms + " bedrooms"}
             </Button>
-            <Button variant="secondary">Gym</Button>
-            <Button variant="secondary">Garage</Button>
+            <Button variant="secondary">{rooms + " bathrooms"}</Button>
           </div>
         </div>
       </div>
       {/* cards */}
       <div className="grid grid-cols-3 gap-4 mr-4">
-        <div>
-          <div className="relative">
-            <img
-              src="/images/cards-pic/card (1).jpg"
-              alt="house image"
-              className="size-90 rounded-2xl "
-            />
-            <Button variant="secondary" className={"absolute top-5 left-3"}>
-              For sale
-            </Button>
-          </div>
+        {products.map((product, index) => (
+          <div key={index}>
+            <div className="relative">
+              <img
+                src={product.img}
+                alt="house image"
+                className="size-90 rounded-2xl "
+              />
+              <Button variant="secondary" className={"absolute top-5 left-3"}>
+                {product.type}
+              </Button>
+            </div>
 
-          <div className="flex gap-2">
-            <div className="flex my-2">
-              <MdBedroomParent className="mt-1" />
-              <p>5 Bedrooms</p>
+            <div className="flex gap-2">
+              <div className="flex my-2">
+                <MdBedroomParent className="mt-1" />
+                <p>{product.bedrooms} Bedrooms</p>
+              </div>
+              <div className="flex my-2">
+                <MdOutlineBathroom className="mt-1" />
+                <p>{product.bathrooms} Bathrooms</p>
+              </div>
             </div>
-            <div className="flex my-2">
-              <MdOutlineBathroom className="mt-1" />
-              <p>2 Bedrooms</p>
-            </div>
-          </div>
-          <p className="font-semibold text-2xl">
-            The pinnabale of highland park
-          </p>
-          <div className="flex gap-3 mt-4">
-            <p className="font-bold">$12347636.90</p>
-            <p> 123, new maple new york</p>
-          </div>
-        </div>
-        <div>
-          <div className="relative">
-            <img
-              src="/images/cards-pic/card (2).jpg"
-              alt="house image"
-              className="size-90 rounded-2xl "
-            />
-            <Button variant="secondary" className={"absolute top-5 left-3"}>
-              For sale
-            </Button>
-          </div>
-
-          <div className="flex gap-2">
-            <div className="flex my-2">
-              <MdBedroomParent className="mt-1" />
-              <p>5 Bedrooms</p>
-            </div>
-            <div className="flex my-2">
-              <MdOutlineBathroom className="mt-1" />
-              <p>2 Bedrooms</p>
+            <p className="font-semibold text-2xl">{product.title}</p>
+            <div className="flex gap-3 mt-4">
+              <p className="font-bold">${product.price}</p>
+              <p> {product.location}</p>
             </div>
           </div>
-          <p className="font-semibold text-2xl">
-            The pinnabale of highland park
-          </p>
-          <div className="flex gap-3 mt-4">
-            <p className="font-bold">$12347636.90</p>
-            <p> 123, new maple new york</p>
-          </div>
-        </div>
-        <div>
-          <div className="relative">
-            <img
-              src="/images/cards-pic/card (3).jpg"
-              alt="house image"
-              className="size-90 rounded-2xl "
-            />
-            <Button variant="secondary" className={"absolute top-5 left-3"}>
-              For sale
-            </Button>
-          </div>
-
-          <div className="flex gap-2">
-            <div className="flex my-2">
-              <MdBedroomParent className="mt-1" />
-              <p>5 Bedrooms</p>
-            </div>
-            <div className="flex my-2">
-              <MdOutlineBathroom className="mt-1" />
-              <p>2 Bedrooms</p>
-            </div>
-          </div>
-          <p className="font-semibold text-2xl">
-            The pinnabale of highland park
-          </p>
-          <div className="flex gap-3 mt-4">
-            <p className="font-bold">$12347636.90</p>
-            <p> 123, new maple new york</p>
-          </div>
-        </div>
-        <div>
-          <div className="relative">
-            <img
-              src="/images/cards-pic/card (1).jpg"
-              alt="house image"
-              className="size-90 rounded-2xl "
-            />
-            <Button variant="secondary" className={"absolute top-5 left-3"}>
-              For sale
-            </Button>
-          </div>
-
-          <div className="flex gap-2">
-            <div className="flex my-2">
-              <MdBedroomParent className="mt-1" />
-              <p>5 Bedrooms</p>
-            </div>
-            <div className="flex my-2">
-              <MdOutlineBathroom className="mt-1" />
-              <p>2 Bedrooms</p>
-            </div>
-          </div>
-          <p className="font-semibold text-2xl">
-            The pinnabale of highland park
-          </p>
-          <div className="flex gap-3 mt-4">
-            <p className="font-bold">$12347636.90</p>
-            <p> 123, new maple new york</p>
-          </div>
-        </div>
-        <div>
-          <div className="relative">
-            <img
-              src="/images/cards-pic/card (2).jpg"
-              alt="house image"
-              className="size-90 rounded-2xl "
-            />
-            <Button variant="secondary" className={"absolute top-5 left-3"}>
-              For sale
-            </Button>
-          </div>
-
-          <div className="flex gap-2">
-            <div className="flex my-2">
-              <MdBedroomParent className="mt-1" />
-              <p>5 Bedrooms</p>
-            </div>
-            <div className="flex my-2">
-              <MdOutlineBathroom className="mt-1" />
-              <p>2 Bedrooms</p>
-            </div>
-          </div>
-          <p className="font-semibold text-2xl">
-            The pinnabale of highland park
-          </p>
-          <div className="flex gap-3 mt-4">
-            <p className="font-bold">$12347636.90</p>
-            <p> 123, new maple new york</p>
-          </div>
-        </div>
-        <div>
-          <div className="relative">
-            <img
-              src="/images/cards-pic/card (3).jpg"
-              alt="house image"
-              className="size-90 rounded-2xl "
-            />
-            <Button variant="secondary" className={"absolute top-5 left-3"}>
-              For sale
-            </Button>
-          </div>
-
-          <div className="flex gap-2">
-            <div className="flex my-2">
-              <MdBedroomParent className="mt-1" />
-              <p>5 Bedrooms</p>
-            </div>
-            <div className="flex my-2">
-              <MdOutlineBathroom className="mt-1" />
-              <p>2 Bedrooms</p>
-            </div>
-          </div>
-          <p className="font-semibold text-2xl">
-            The pinnabale of highland park
-          </p>
-          <div className="flex gap-3 mt-4">
-            <p className="font-bold">$12347636.90</p>
-            <p> 123, new maple new york</p>
-          </div>
-        </div>
+        ))}
       </div>
     </div>
   );

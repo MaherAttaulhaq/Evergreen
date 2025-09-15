@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import pb from "@/lib/pocketbase";
 export const Header = () => {
   const navigate = useNavigate();
-  const [user, setUser] = React.useState(pb.authStore.model); 
+  const [user, setUser] = React.useState(pb.authStore.model);
   const [open, setOpen] = React.useState(false);
 
   React.useEffect(() => {
@@ -38,7 +38,7 @@ export const Header = () => {
                 Login
               </NavLink>
             ) : (
-              // Logged in 
+              // Logged in
               <div className="relative">
                 <img
                   src={

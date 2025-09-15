@@ -7,7 +7,6 @@ import {
 } from "@/components/ui/accordion";
 import AccordianData from "../../api/question.json";
 export const Accordian = ({ questions }) => {
-  console.log("questions", questions);
   return (
     <section className="container mx-auto px-4 py-8">
       <div className="flex justify-between md:flex-row flex-col">
